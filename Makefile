@@ -1,42 +1,36 @@
-EXEC=./main.py
-INSTALL_PYTHON_PACKAGE_MSG="By default python3 is used."
+EXEC=pip
+EXEC_DEFAULT_TEST=pytest
 PYTHON_DEFAULT_EXEC=python3
 
-all: run
+all: t
 
-scroller:
-	$(PYTHON_DEFAULT_EXEC) python_version_scroller.py
-
-dockeryaml:
-	$(PYTHON_DEFAULT_EXEC) test_docker_from_yaml.py
 
 run:
 ifndef scenario
-	$(MAKE) Convert
-else ifeq ($(scenario), 1)
-	$(MAKE) Convert
+	$(MAKE) -C examples run_scenario_1
 else ifeq ($(scenario), 2)
-	$(MAKE) Exctract
+	$(MAKE) -C examples run_scenario_2
 else ifeq ($(scenario), 3)
-	$(MAKE) ExtractNoExtension
+	$(MAKE) -C examples run_scenario_3
 else ifeq ($(scenario), 4)
-	$(MAKE) AddExtension
+	$(MAKE) -C examples run_scenario_4
+else ifeq ($(scenario), 5)
+	$(MAKE) -C examples run_scenario_5
 else
-	$(MAKE) Convert
+	$(MAKE) -C examples run_scenario_defaults
 endif
 
-Convert:
-	echo 'scenario 1'
-	$(PYTHON_DEFAULT_EXEC) $(EXEC) -v true -f files/need-convert.txt -w "bonjour "
+test:
+ifndef exec_test
+	$(PYTHON_DEFAULT_EXEC) -m $(EXEC_DEFAULT_TEST) -q test -s
+else
+	$(PYTHON_DEFAULT_EXEC) -m $(exec_test) -q test -s
+endif
 
-Exctract:
-	echo 'scenario 2'
-	$(PYTHON_DEFAULT_EXEC) $(EXEC) -v true -f files/need-convert.txt -d file/default-need-convert.txt -e "tst"
+install:
+	$(PYTHON_DEFAULT_EXEC) -m $(EXEC) install .
+	echo "pversioner installed"
 
-ExtractNoExtension:
-	echo 'scenario 3'
-	$(PYTHON_DEFAULT_EXEC) $(EXEC) -v true -f files/need-convert.txt -d file/default-need-convert.txt
-
-AddExtension:
-	echo 'scenario 4'
-	$(PYTHON_DEFAULT_EXEC) $(EXEC) -v true -f files/need-convert.txt -e "finish"
+uninstall:
+	$(PYTHON_DEFAULT_EXEC) -m $(EXEC) uninstall pversioner
+	echo "pversioner uninstall"

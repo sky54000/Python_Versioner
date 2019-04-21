@@ -1,0 +1,18 @@
+#! /usr/bin/python3
+
+from pversioner.parameters import Parameters
+from pversioner.versioner import Versioner
+from pversioner.generate import Generate
+
+def main():
+
+    state_action_tab = [Generate, Versioner]
+
+    params = Parameters()
+    state = params.get_state()
+    print("state: {}".format(state))
+    state_action_tab[state["action"]](state["data"]).action()
+
+
+if __name__ == '__main__':
+    main()
